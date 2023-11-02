@@ -1,0 +1,70 @@
+{
+    "dataflows": [
+        {
+            "name": "prueba-acceso",
+            "sources": [
+                {
+                    "name": "person_inputs",
+                    "path": "/data/input/events/person/*",
+                    "format": "JSON"
+                }
+            ],
+            "transformations": [
+                {
+                    "name": "validation",
+                    "type": "validate_fields",
+                    "params": {
+                        "input": "person_inputs",
+                        "validations": [
+                            {
+                                "field": "office",
+                                "validations": [
+                                    "notEmpty"
+                                ]
+                            },
+                            {
+                                "field": "age",
+                                "validations": [
+                                    "notNull"
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "ok_with_date",
+                    "type": "add_fields",
+                    "params": {
+                        "input": "person_inputs-validation_ok",
+                        "addFields": [
+                            {
+                                "name": "dt",
+                                "function": "current_timestamp"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "sinks": [
+                {
+                    "input": "person_inputs-ok_with_date",
+                    "name": "raw-ok",
+                    "boostrap-servers": "localhost:29092",
+                    "topics": [
+                        "person"
+                    ],
+                    "format": "KAFKA"
+                },
+                {
+                    "input": "person_inputs-ok_with_date",
+                    "name": "raw-ko",
+                    "paths": [
+                        "/data/output/discards/person"
+                    ],
+                    "format": "JSON",
+                    "saveMode": "OVERWRITE"
+                }
+            ]
+        }
+    ]
+}

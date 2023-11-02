@@ -1,0 +1,5 @@
+docker pull apache/airflow
+docker run -d -p 8090:8080 --name airflow -e LOAD_EX=y -v C:\Users\Emilio\Documents\sdg-test\airflow\dags:/opt/airflow/dags apache/airflow bash -c "pip3 install apache-airflow-backport-providers-docker && airflow db init && airflow webserver"
+docker exec -ti airflow bash
+airflow users create --username admin --firstname Emilio --lastname Contreras --role Admin --email admin@example.org
+airflow scheduler
