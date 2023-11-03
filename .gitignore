@@ -160,3 +160,4 @@ cython_debug/
 .idea/
 
 spark/spark-3.5.0-bin-hadoop3/*
+airflow/dags/data/*

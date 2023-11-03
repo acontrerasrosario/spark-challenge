@@ -5,7 +5,7 @@
             "sources": [
                 {
                     "name": "person_inputs",
-                    "path": "/data/input/events/person/*",
+                    "path": "./data/input/events/person/*",
                     "format": "JSON"
                 }
             ],
@@ -15,6 +15,8 @@
                     "type": "validate_fields",
                     "params": {
                         "input": "person_inputs",
+                        "output_success": "validation_ok",
+                        "output_error": "validation_ko",
                         "validations": [
                             {
                                 "field": "office",
@@ -36,6 +38,7 @@
                     "type": "add_fields",
                     "params": {
                         "input": "person_inputs-validation_ok",
+                        "output": "person_inputs-validation_ok-ok_with_date",
                         "addFields": [
                             {
                                 "name": "dt",
@@ -47,7 +50,7 @@
             ],
             "sinks": [
                 {
-                    "input": "person_inputs-ok_with_date",
+                    "input": "person_inputs-validation_ok-ok_with_date",
                     "name": "raw-ok",
                     "boostrap-servers": "localhost:29092",
                     "topics": [
@@ -56,10 +59,10 @@
                     "format": "KAFKA"
                 },
                 {
-                    "input": "person_inputs-ok_with_date",
+                    "input": "person_inputs-validation_ko",
                     "name": "raw-ko",
                     "paths": [
-                        "/data/output/discards/person"
+                        "./data/output/discards/person"
                     ],
                     "format": "JSON",
                     "saveMode": "OVERWRITE"
